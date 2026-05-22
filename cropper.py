@@ -30,11 +30,7 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
         y1 = max(0, min(y1, img_h))
 
         if x1 <= x0 or y1 <= y0:
-            raise ValueError(
-                f"Crop {i} resolved to empty region: "
-                f"box=({x0},{y0},{x1},{y1}), image={img_w}x{img_h}px, "
-                f"input bbox={bbox}"
-            )
+            continue
 
         crop = img.crop((x0, y0, x1, y1))
 
