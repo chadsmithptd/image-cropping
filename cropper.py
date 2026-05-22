@@ -15,8 +15,8 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
 
     img = Image.open(BytesIO(image_bytes)).convert("RGB")
     img_w, img_h = img.size
-    ref_w = doc_width if doc_width else img_w
-    ref_h = doc_height if doc_height else img_h
+    ref_w = doc_width if doc_width else 100
+    ref_h = doc_height if doc_height else 100
 
     results = []
     for i, bbox in enumerate(bboxes):
