@@ -6,10 +6,10 @@ app = FastAPI()
 
 
 class BoundingBox(BaseModel):
-    absLeft: float
-    absTop: float
     width: float
+    absTop: float
     height: float
+    absLeft: float
 
 
 class CropRequest(BaseModel):

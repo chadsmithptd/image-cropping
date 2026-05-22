@@ -8,7 +8,7 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
     if image_base64:
         image_bytes = base64.b64decode(image_base64)
     else:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
             response = await client.get(image_url)
             response.raise_for_status()
             image_bytes = response.content
