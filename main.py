@@ -5,12 +5,18 @@ from cropper import fetch_and_crop
 app = FastAPI()
 
 
+class Vertex(BaseModel):
+    x: float
+    y: float
+
+
 class BoundingBox(BaseModel):
     id: str | int
-    width: float
-    absTop: float
-    height: float
-    absLeft: float
+    vertices: list[Vertex] | None = None
+    width: float | None = None
+    absTop: float | None = None
+    height: float | None = None
+    absLeft: float | None = None
 
 
 class CropRequest(BaseModel):

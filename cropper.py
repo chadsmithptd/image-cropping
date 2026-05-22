@@ -22,10 +22,19 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
     for i, bbox in enumerate(bboxes):
         pad_x = 0.0025 * img_w
         pad_y = 0.0025 * img_h
-        x0 = round(bbox["absLeft"] * img_w / ref_w - pad_x)
-        y0 = round(bbox["absTop"] * img_h / ref_h - pad_y)
-        x1 = round((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
-        y1 = round((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
+
+        if bbox.get("vertices"):
+            xs = [v["x"] for v in bbox["vertices"]]
+            ys = [v["y"] for v in bbox["vertices"]]
+            x0 = round(min(xs) * img_w / ref_w - pad_x)
+            y0 = round(min(ys) * img_h / ref_h - pad_y)
+            x1 = round(max(xs) * img_w / ref_w + pad_x)
+            y1 = round(max(ys) * img_h / ref_h + pad_y)
+        else:
+            x0 = round(bbox["absLeft"] * img_w / ref_w - pad_x)
+            y0 = round(bbox["absTop"] * img_h / ref_h - pad_y)
+            x1 = round((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
+            y1 = round((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
 
         # Clamp to image bounds
         x0 = max(0, min(x0, img_w))
