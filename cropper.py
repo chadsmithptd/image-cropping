@@ -38,6 +38,6 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
         crop.save(buf, format="PNG")
         encoded = base64.b64encode(buf.getvalue()).decode()
 
-        results.append({"index": i, "image_base64": encoded})
+        results.append({"id": bbox["id"], "image_base64": encoded})
 
     return results

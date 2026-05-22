@@ -6,6 +6,7 @@ app = FastAPI()
 
 
 class BoundingBox(BaseModel):
+    id: str
     width: float
     absTop: float
     height: float
