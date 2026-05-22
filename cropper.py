@@ -4,11 +4,14 @@ from io import BytesIO
 from PIL import Image
 
 
-async def fetch_and_crop(image_url: str, bboxes: list[dict]) -> list[dict]:
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        response = await client.get(image_url)
-        response.raise_for_status()
-        image_bytes = response.content
+async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes: list[dict]) -> list[dict]:
+    if image_base64:
+        image_bytes = base64.b64decode(image_base64)
+    else:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(image_url)
+            response.raise_for_status()
+            image_bytes = response.content
 
     img = Image.open(BytesIO(image_bytes)).convert("RGB")
     img_w, img_h = img.size
