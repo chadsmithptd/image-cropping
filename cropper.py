@@ -4,7 +4,7 @@ from io import BytesIO
 from PIL import Image
 
 
-async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes: list[dict]) -> list[dict]:
+async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes: list[dict], doc_width: float | None = None, doc_height: float | None = None) -> list[dict]:
     if image_base64:
         image_bytes = base64.b64decode(image_base64)
     else:
@@ -15,13 +15,17 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
 
     img = Image.open(BytesIO(image_bytes)).convert("RGB")
     img_w, img_h = img.size
+    ref_w = doc_width if doc_width else img_w
+    ref_h = doc_height if doc_height else img_h
 
     results = []
     for i, bbox in enumerate(bboxes):
-        x0 = int((bbox["absLeft"] / 100) * img_w)
-        y0 = int((bbox["absTop"] / 100) * img_h)
-        x1 = int(x0 + (bbox["width"] / 100) * img_w)
-        y1 = int(y0 + (bbox["height"] / 100) * img_h)
+        pad_x = 0.0025 * img_w
+        pad_y = 0.0025 * img_h
+        x0 = int(bbox["absLeft"] * img_w / ref_w - pad_x)
+        y0 = int(bbox["absTop"] * img_h / ref_h - pad_y)
+        x1 = int((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
+        y1 = int((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
 
         # Clamp to image bounds
         x0 = max(0, min(x0, img_w))

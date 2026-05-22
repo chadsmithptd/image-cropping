@@ -16,6 +16,8 @@ class BoundingBox(BaseModel):
 class CropRequest(BaseModel):
     image_url: str | None = None
     image_base64: str | None = None
+    doc_width: float | None = None
+    doc_height: float | None = None
     bboxes: list[BoundingBox]
 
 
@@ -36,6 +38,8 @@ async def crop(request: CropRequest):
             request.image_url,
             request.image_base64,
             [b.model_dump() for b in request.bboxes],
+            request.doc_width,
+            request.doc_height,
         )
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
