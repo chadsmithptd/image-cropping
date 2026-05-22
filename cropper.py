@@ -1,7 +1,7 @@
 import base64
 import httpx
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes: list[dict], doc_width: float | None = None, doc_height: float | None = None) -> list[dict]:
@@ -13,7 +13,7 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
             response.raise_for_status()
             image_bytes = response.content
 
-    img = Image.open(BytesIO(image_bytes)).convert("RGB")
+    img = ImageOps.exif_transpose(Image.open(BytesIO(image_bytes))).convert("RGB")
     img_w, img_h = img.size
     ref_w = doc_width if doc_width else 100
     ref_h = doc_height if doc_height else 100
