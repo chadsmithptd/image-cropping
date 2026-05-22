@@ -22,10 +22,10 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
     for i, bbox in enumerate(bboxes):
         pad_x = 0.0025 * img_w
         pad_y = 0.0025 * img_h
-        x0 = int(bbox["absLeft"] * img_w / ref_w - pad_x)
-        y0 = int(bbox["absTop"] * img_h / ref_h - pad_y)
-        x1 = int((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
-        y1 = int((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
+        x0 = round(bbox["absLeft"] * img_w / ref_w - pad_x)
+        y0 = round(bbox["absTop"] * img_h / ref_h - pad_y)
+        x1 = round((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
+        y1 = round((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
 
         # Clamp to image bounds
         x0 = max(0, min(x0, img_w))
@@ -42,6 +42,6 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
         crop.save(buf, format="PNG")
         encoded = base64.b64encode(buf.getvalue()).decode()
 
-        results.append({"id": bbox["id"], "image_base64": encoded, "debug": {"x0": x0, "y0": y0, "x1": x1, "y1": y1, "img_w": img_w, "img_h": img_h}})
+        results.append({"id": bbox["id"], "image_base64": encoded, "debug": {"x0": x0, "y0": y0, "x1": x1, "y1": y1, "img_w": img_w, "img_h": img_h, "received_bbox": bbox}})
 
     return results
