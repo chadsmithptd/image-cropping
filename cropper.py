@@ -25,8 +25,8 @@ async def fetch_and_crop(image_url: str | None, image_base64: str | None, bboxes
 
         x0 = round(bbox["absLeft"] * img_w / ref_w - pad_x)
         y0 = round(bbox["absTop"] * img_h / ref_h - pad_y)
-        x1 = round((bbox["absLeft"] + bbox["width"]) * img_w / ref_w + pad_x)
-        y1 = round((bbox["absTop"] + bbox["height"]) * img_h / ref_h + pad_y)
+        x1 = round(bbox["right"] * img_w / ref_w + pad_x)
+        y1 = round(bbox["bottom"] * img_h / ref_h + pad_y)
 
         # Clamp to image bounds
         x0 = max(0, min(x0, img_w))
